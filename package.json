@@ -1,0 +1,30 @@
+{
+  "name": "iot-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dinhuong/iot-server.git"
+  },
+  "author": "Huong Dinh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dinhuong/iot-server/issues"
+  },
+  "homepage": "https://github.com/dinhuong/iot-server#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^14.3.2",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.8",
+    "mqtt": "^4.3.4",
+    "nodemon": "^2.0.15",
+    "rand-token": "^1.0.1"
+  }
+}
