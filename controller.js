@@ -7,9 +7,10 @@ const { path } = require('express/lib/application');
 
 class Controller {
     async register(req, res, next) {
+        console.log(req.body)
         const username = req.body.username;
         const user = await User.findOne({username});
-        if (user) res.status(409).send('Tên tài khoản đã tồn tại.');
+        if (!user) res.status(409).send('Tên tài khoản đã tồn tại.');
         else {
             const hashPassword = bcrypt.hashSync(req.body.password, SALT_ROUNDS);
             const user = {
