@@ -1,22 +1,24 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt')
 
 const User = require('./models/user');
 const Garden = require('./models/garden');
 const Sensor = require('./models/sensor');
 const { path } = require('express/lib/application');
+const req = require('express/lib/request');
 
 class Controller {
     async register(req, res, next) {
         console.log(req.body)
         const username = req.body.username;
         const user = await User.findOne({username});
-        if (!user) res.status(409).send('Tên tài khoản đã tồn tại.');
+        if (user) res.status(409).send('Tên tài khoản đã tồn tại.');
         else {
-            const hashPassword = bcrypt.hashSync(req.body.password, SALT_ROUNDS);
-            const user = {
+            const hashPassword = bcrypt.hashSync(req.body.password, 10);
+            const user = new User({
                 username: username,
                 password: req.body.password
-            };
+            });
             const createdUser = await user.save();
             if (!createdUser) {
                 return res
@@ -48,7 +50,7 @@ class Controller {
         const dataForAccessToken = {
             user_id: user._id,
         };
-        const accessToken = await jwt.sign(dataForAccessToken, accessTokenSecret, accessTokenLife)
+        const accessToken = await jwt.sign(dataForAccessToken, accessTokenSecret, { expiresIn: accessTokenLife})
 
         if (!accessToken) {
             return res
