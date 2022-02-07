@@ -58,7 +58,7 @@ class Controller {
         return res.json({
             msg: 'Login successful',
             token: accessToken,
-            user_id: user._id,
+            user: user,
         });
     }
 
