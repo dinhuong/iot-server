@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const SensorSchema = new mongoose.Schema({
     type: {
-        type: String,
+        type: Number,
+        enum: [0,1,2,3],  //0: temp, 1:light 
         required: true,
     },
     isActive: {

@@ -14,7 +14,7 @@ class Controller {
             const hashPassword = bcrypt.hashSync(req.body.password, SALT_ROUNDS);
             const user = {
                 username: username,
-                password: hashPassword
+                password: req.body.password
             };
             const createdUser = await user.save();
             if (!createdUser) {
@@ -37,7 +37,7 @@ class Controller {
         }
 
         const isPasswordValid = bcrypt.compareSync(password, user.password);
-        if (!isPasswordValid) {
+        if (password != user.password) {
             return res.status(401).send('Invalid password');
         }
 
@@ -57,8 +57,8 @@ class Controller {
 
         return res.json({
             msg: 'Login successful',
-            accessToken,
-            user,
+            token: accessToken,
+            user_id: user._id,
         });
     }
 
