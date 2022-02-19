@@ -20,20 +20,20 @@ mongoose
 const client = mqtt.connect(process.env.MQTT_HOST);
 
 client.on('connect', () => {
-  client.subscribe('/nhom8/#');
+  client.subscribe('/iot-nhom8-20211/#');
   console.log('client connected');
 })
 
 //save data to DB
-// client.on('message', (topic, message) => {
-//   var data = message.toString() //.replaceAll('\'', '\"');
-//   console.log(data)
-//   // console.log(JSON.parse(data));
-//   // console.log('\n')
+client.on('message', (topic, message) => {
+  var data = message.toString() //.replaceAll('\'', '\"');
+  console.log(data)
+  // console.log(JSON.parse(data));
+  // console.log('\n')
 
-//   // var message = JSON.parse(message.toString());
-//   // console.log(message);
-// })
+  // var message = JSON.parse(message.toString());
+  // console.log(message);
+})
 
 const app = express();
 app.use(express.json());
