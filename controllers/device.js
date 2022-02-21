@@ -3,7 +3,7 @@ const Device = require("../models/device")
 
 module.exports = {
     getAll: async function (req, res, next) {
-        const devices = await Device.find({ status: false})
+        const devices = await Device.find({ status: false, type: [3,4] })
         console.log(devices)
         res.json(devices)
     },
