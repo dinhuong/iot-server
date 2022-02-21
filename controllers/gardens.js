@@ -10,7 +10,7 @@ module.exports = {
     postCeate : async function (req, res, next) {
         const garden = new Garden({
             name: req.body.name,
-            address: req.body.req.body.address,
+            address: req.body.address,
             acreage: req.body.acreage
         });
 
@@ -18,12 +18,18 @@ module.exports = {
         if (!createdGarden) {
             res.send("Fail")
         }
+        let user = req.user
+        user.gardens = [...user.gardens, createdGarden._id]
+        user.save()
         res.json(createdGarden)
     },
 
     deleteOne : async function (req, res, next) {
         Garden.deleteOne({ _id: req.body.gardenId })
         .then(result => {
+            let user = req.user
+            user.gardens.splice(user.gardens.findIndex(g => g==result._id), 1)
+            user.save()
             res.status(200).send("Successful")
         })
         .catch(err => {
