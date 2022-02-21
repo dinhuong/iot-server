@@ -3,7 +3,7 @@ const Area = require("../models/area")
 
 module.exports = {
     getAll : async function (req, res, next) {
-        let garden = await Garden.findById(req.body.gardenId)
+        let garden = await Garden.findById(req.query.gardenId)
         garden = await garden.populate('areas')
         console.log(garden.areas)
         return res.json(garden.areas)

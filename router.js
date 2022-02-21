@@ -6,8 +6,10 @@ const GardenController = require('./controllers/gardens')
 
 const AreaController = require('./controllers/areas')
 
+const DeviceController = require('./controllers/device')
+
 const auth = require('./auth.middleware');
-const gardens = require('./controllers/gardens');
+const { route } = require('express/lib/application');
 
 const router = express.Router();
 
@@ -28,5 +30,11 @@ router.get('/areas', auth.requireAuth, AreaController.getAll);
 router.post('/areas/create', auth.requireAuth, AreaController.postCeate);
 
 router.delete('/areas', auth.requireAuth, AreaController.deleteOne);
+
+router.get('/devices', DeviceController.getAll)
+
+router.post('/devices/create', DeviceController.postCreate)
+
+router.get('/devices/:deviceId', DeviceController.bind)
 
 module.exports = router;

@@ -14,14 +14,12 @@ const AreaSchema = new mongoose.Schema({
     position: {
         type: String,
     },
-    temperature: {
-        type: Number,
-    },
-    humid: {
-        type: Number,
-    }
+    devices: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Device',
+    }]
 });
 
-const Sensor = mongoose.model('Area', AreaSchema);
+const Area = mongoose.model('Area', AreaSchema);
 
-module.exports = Sensor;
+module.exports = Area;
