@@ -21,6 +21,8 @@ router.post('/gardens/create', auth.requireAuth, GardenController.postCeate);
 
 router.delete('/gardens', auth.requireAuth, GardenController.deleteOne);
 
+router.get('/areas/:areaId', auth.requireAuth, AreaController.getOne);
+
 router.get('/areas', auth.requireAuth, AreaController.getAll);
 
 router.post('/areas/create', auth.requireAuth, AreaController.postCeate);

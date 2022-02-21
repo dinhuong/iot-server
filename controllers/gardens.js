@@ -1,4 +1,5 @@
 const Garden = require("../models/garden");
+const Area = require("../models/area");
 
 module.exports = {
     getAll : async function (req, res, next) {
@@ -30,6 +31,7 @@ module.exports = {
             let user = req.user
             user.gardens.splice(user.gardens.findIndex(g => g==result._id), 1)
             user.save()
+            Area.deleteMany(result._id)
             res.status(200).send("Successful")
         })
         .catch(err => {
