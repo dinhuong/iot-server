@@ -8,7 +8,7 @@ module.exports = {
         res.json(devices)
     },
 
-    postCreate: (req, res, next) => {
+    postCreate: async (req, res, next) => {
         const device = new Device({
             area: req.body.areaId,
             type: req.body.type,

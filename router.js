@@ -2,9 +2,9 @@ const express = require('express');
 
 const UserController = require('./controllers/user')
 
-const GardenController = require('./controllers/gardens')
+const GardenController = require('./controllers/garden')
 
-const AreaController = require('./controllers/areas')
+const AreaController = require('./controllers/area')
 
 const DeviceController = require('./controllers/device')
 
@@ -31,10 +31,10 @@ router.post('/areas/create', auth.requireAuth, AreaController.postCeate);
 
 router.delete('/areas', auth.requireAuth, AreaController.deleteOne);
 
+router.get('/devices/:deviceId', DeviceController.bind) 
+
 router.get('/devices', DeviceController.getAll)
 
 router.post('/devices/create', DeviceController.postCreate)
-
-router.get('/devices/:deviceId', DeviceController.bind)
 
 module.exports = router;
