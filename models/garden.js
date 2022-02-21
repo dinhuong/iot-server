@@ -5,17 +5,16 @@ const GardenSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    address: {
+        type: String,
+    },
+    acreage: {
+        type: Number,
+    },
     areas: [{
-        name: {
-            type: String,
-        },
-        sensors: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Sensor',
-            }
-        ]
-    }],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Area'
+    }]
 });
 
 const Garden = mongoose.model('Garden', GardenSchema);

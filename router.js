@@ -1,17 +1,27 @@
 const express = require('express');
 
-const Controller = require('./controller');
+const UserController = require('./controller/user')
 
-const auth = require('./auth.middleware')
+const GardenController = require('./controller/gardens')
+
+const AreaController = require('./controller/areas')
+
+const auth = require('./auth.middleware');
+const gardens = require('./controller/gardens');
 
 const router = express.Router();
 
-router.post('/register', Controller.register)
+router.post('/register', UserController.register)
 
-router.post('/login', Controller.login);
+router.post('/login', UserController.login);
 
-router.get('/gardens', Controller.getGardens);
+router.get('/gardens', auth.requireAuth, GardenController.getAll);
 
-router.get('/sensors', Controller.getSensors)
+router.post('/gardens/create', auth.requireAuth, GardenController.postCeate);
+
+router.delete('/gardens', auth.requireAuth, GardenController.deleteOne);
+
+
+router.get('/sensors', auth.requireAuth, Controller.getSensors)
 
 module.exports = router;

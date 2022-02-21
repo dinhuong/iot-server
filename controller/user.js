@@ -2,13 +2,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 
 const User = require('./models/user');
-const Garden = require('./models/garden');
-const Sensor = require('./models/sensor');
-const { path } = require('express/lib/application');
-const req = require('express/lib/request');
 
-class Controller {
-    async register(req, res, next) {
+module.exports = {
+    register: async function(req, res, next) {
         console.log(req.body)
         const username = req.body.username;
         const user = await User.findOne({username});
@@ -27,14 +23,14 @@ class Controller {
             }
             return res.send(createdUser);
         }
-    }
-
-    async login(req, res, next) {
+    },
+    
+    login: async function (req, res, next) {
 
         const username = req.body.username
         const password = req.body.password
 
-        const user = await User.findOne({username})
+        const user = await User.findOne({ username })
         if (!user) {
             return res.status(401).send('Invalid username');
         }
@@ -50,7 +46,7 @@ class Controller {
         const dataForAccessToken = {
             user_id: user._id,
         };
-        const accessToken = await jwt.sign(dataForAccessToken, accessTokenSecret, { expiresIn: accessTokenLife})
+        const accessToken = await jwt.sign(dataForAccessToken, accessTokenSecret, { expiresIn: accessTokenLife })
 
         if (!accessToken) {
             return res
@@ -64,18 +60,4 @@ class Controller {
             user: user,
         });
     }
-
-    async getGardens(req, res, next) {
-        const gardens = await req.user.populate("gardens").gardens
-        console.log(gardens)
-        return res.json(gardens)
-    }
-
-    async getSensors(req, res, next) {
-        const garden = Garden.findById(req.gardenId)
-        garden.areas.map(area => area.populate('sensors'))
-        return res.json(garden)
-    }
 }
-
-module.exports = new Controller();
