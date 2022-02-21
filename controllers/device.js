@@ -24,15 +24,23 @@ module.exports = {
     },
 
     bind: async function (req, res, next) {
-        let device = await Device.findById(req.param.deviceId)
-        const area = await Area.findById(req.query.areaId)
-        device.status = true
-        device = device.save()
-            .then(suc => {
-                area.devices = [...area.devices, device]
-                area.save()
-                res.send('Successful')
-            })
-            .catch(err => { res.send('Fail')})
+        let device = await Device.findById(req.params.deviceId)
+
+        if (!device.status) {
+            let area = await Area.findById(req.query.areaId)
+            device.status = true
+            device.save()
+                .then(async (suc) => {
+                    console.log(suc)
+                    area.devices = [...area.devices, suc._id]
+                    console.log(area.devices)
+                    await area.save()
+                    res.send('Successful')
+                })
+                .catch(err => { res.send('Fail')})
+        }
+
+        res.send('Error. Device has been already binded.')
+        
     }
 }
