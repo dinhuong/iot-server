@@ -16,7 +16,7 @@ module.exports = {
 
     postCeate : async function (req, res, next) {
         const area = new Area({
-            garden: req.body.gardenId,
+            garden: req.body.garden,
             name: req.body.name,
             position: req.body.position,
             acreage: req.body.acreage
