@@ -3,7 +3,7 @@ const mqtt = require('mqtt');
 const mongoose = require('mongoose');
 const router = require('./router');
 const Device = require('./models/device');
-const device = require('./controllers/device');
+var cron = require('node-cron');
 
 require('dotenv').config();
 
@@ -28,18 +28,20 @@ client.on('connect', () => {
 
 //save data to DB
 client.on('message', async (topic, message) => {
-  let data = message.toString().split(':')[1].split(',')[0]
-  console.log(data)
-  console.log(topic)
+  let data = message.toString()
+  
+  if (data.split(':').length > 2) {
+    let value = data.split(':')[1].split(',')[0]
+    let devices = await Device.find({ topic: topic })
 
-  let devices = await Device.find({ topic: topic })
-
-  for (let i=0; i< devices.length; i++) {
-    let device = await Device.findByIdAndUpdate(devices[i]._id, { value: data })
-    console.log(device)
-    // devices[i].value = data
-    // await device[i].save()
+    for (let i=0; i< devices.length; i++) {
+      devices[i].value = value
+      await devices[i].save()
+      console.log(devices[i])
+    }
   }
+ 
+  
   
 })
 

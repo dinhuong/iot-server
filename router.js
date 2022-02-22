@@ -53,4 +53,8 @@ router.get('/devices/manage/unbind', auth.requireAuth, DeviceController.unbind)
 
 router.post('/devices/manage/create', auth.requireAuth, DeviceController.createReal)
 
+//schedule
+
+router.get('/schedule', DeviceController.schedule)
+
 module.exports = router;
