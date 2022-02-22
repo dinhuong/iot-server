@@ -12,11 +12,18 @@ const DeviceSchema = new mongoose.Schema({
     },
 
     status: {
-        type: Boolean
+        type: Boolean,
+        default: false
     },
     
     value: {
-        type: Number
+        type: Number,
+        default: 0
+    },
+
+    position: {
+        type: String,
+        default: 'abc'
     }
 });
 

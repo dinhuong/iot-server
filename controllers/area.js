@@ -26,7 +26,7 @@ module.exports = {
         if (!createdArea) {
             res.send("Fail")
         }
-        let garden = await Garden.findById(req.body.gardenId)
+        let garden = await Garden.findById(req.body.garden)
         garden.areas = [...garden.areas, createdArea._id]
         garden.save()
         res.json(createdArea)
