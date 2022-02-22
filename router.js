@@ -49,6 +49,8 @@ router.get('/devices/manage/getUnbinded', auth.requireAuth, DeviceController.get
 
 router.get('/devices/manage/bind', auth.requireAuth, DeviceController.bind)
 
+router.get('/devices/manage/unbind', auth.requireAuth, DeviceController.unbind)
+
 router.post('/devices/manage/create', auth.requireAuth, DeviceController.createReal)
 
 module.exports = router;

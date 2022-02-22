@@ -6,9 +6,13 @@ const DeviceSchema = new mongoose.Schema({
         ref: 'Area',
     },
     
+    name: {
+        type: String
+    },
+
     type: {
-        type: Number, //1-temp, 2-humid 3-lamp 4-pump
-        enum: [1,2,3,4]
+        type: Number, //1-temp, 2-humid 3-lamp 4-pump 5-soil
+        enum: [1,2,3,4,5]
     },
 
     status: {

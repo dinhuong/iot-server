@@ -2,6 +2,8 @@ const express = require('express');
 const mqtt = require('mqtt');
 const mongoose = require('mongoose');
 const router = require('./router');
+const Device = require('./models/device');
+const device = require('./controllers/device');
 
 require('dotenv').config();
 
@@ -20,19 +22,25 @@ mongoose
 const client = mqtt.connect(process.env.MQTT_HOST);
 
 client.on('connect', () => {
-  client.subscribe('/iot-nhom8-20211/#');
+  client.subscribe('iot-nhom8-20211/#');
   console.log('client connected');
 })
 
 //save data to DB
-client.on('message', (topic, message) => {
-  var data = message.toString() //.replaceAll('\'', '\"');
+client.on('message', async (topic, message) => {
+  let data = message.toString().split(':')[1].split(',')[0]
   console.log(data)
-  // console.log(JSON.parse(data));
-  // console.log('\n')
+  console.log(topic)
 
-  // var message = JSON.parse(message.toString());
-  // console.log(message);
+  let devices = await Device.find({ topic: topic })
+
+  for (let i=0; i< devices.length; i++) {
+    let device = await Device.findByIdAndUpdate(devices[i]._id, { value: data })
+    console.log(device)
+    // devices[i].value = data
+    // await device[i].save()
+  }
+  
 })
 
 const app = express();

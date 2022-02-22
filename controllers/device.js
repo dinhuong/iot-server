@@ -69,6 +69,24 @@ module.exports = {
         
     },
 
+    unbind: async function (req, res, next) {
+        let virtualDevice = await Device.findById(req.query.virtualId)
+        let realDevice = await Device.findOne({ type: virtualDevice.type, topic: virtualDevice.topic })
+
+        if (virtualDevice && realDevice) {
+            virtualDevice.status = false
+            virtualDevice.topic = null
+            virtualDevice = await virtualDevice.save()
+    
+            realDevice.status = false
+            realDevice = await realDevice.save()
+    
+            if (virtualDevice && realDevice) res.send('Successfull')
+        }
+        
+        res.send('Fail')
+    },
+
     deleteVirtual: async function (req, res, next) {
         Device.findByIdAndDelete(req.query.virtualId)
         .then(async (device) => {
