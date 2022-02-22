@@ -17,6 +17,7 @@ module.exports = {
 
     createReal: async (req, res, next) => {
         const device = new Device({
+            name: req.body.name,
             type: req.body.type,
             topic: req.body.topic
         })
@@ -31,6 +32,7 @@ module.exports = {
 
     createVirtual: async (req, res, next) => {
         const device = new Device({
+            name: req.body.name,
             area: req.body.area,
             type: req.body.type,
             status: false
