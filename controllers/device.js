@@ -2,17 +2,23 @@ const Area = require("../models/area")
 const Device = require("../models/device")
 
 module.exports = {
-    getAll: async function (req, res, next) {
-        const devices = await Device.find({ status: false, type: [3,4] })
+    getRealDevice: async function (req, res, next) {
+        const devices = await Device.find({ area: null, type: req.query.type, status: false })
         console.log(devices)
         res.json(devices)
     },
 
-    postCreate: async (req, res, next) => {
+    getAreaDevice: async function (req, res, next) {
+        let area = await Area.findById(req.query.areaId)
+        area = await area.populate('devices')
+        console.log(area.devices)
+        return res.json(area.devices)
+    },
+
+    createReal: async (req, res, next) => {
         const device = new Device({
-            area: req.body.areaId,
             type: req.body.type,
-            status: false
+            topic: req.body.topic
         })
 
         const createdDevice = await device.save()
@@ -23,24 +29,54 @@ module.exports = {
         res.json(createdDevice)
     },
 
-    bind: async function (req, res, next) {
-        let device = await Device.findById(req.params.deviceId)
+    createVirtual: async (req, res, next) => {
+        const device = new Device({
+            area: req.body.area,
+            type: req.body.type,
+            status: false
+        })
 
-        if (!device.status) {
-            let area = await Area.findById(req.query.areaId)
-            device.status = true
-            device.save()
+        const createdDevice = await device.save()
+        if (!createdDevice) {
+            res.send('Fail')
+        }
+
+        let area = await Area.findById(req.body.area)
+        area.devices = [...area.devices, createdDevice._id]
+        await area.save()
+        res.json(createdDevice)
+    },
+
+    bind: async function (req, res, next) {
+        let realDevice = await Device.findById(req.query.realId)
+        let virtualDevice = await Device.findById(req.query.virtualId)
+
+        if (! (realDevice.status || virtualDevice.status) ) {
+            
+            realDevice.status = true
+            virtualDevice.status = true
+            virtualDevice.topic = realDevice.topic
+
+            await realDevice.save()
                 .then(async (suc) => {
-                    console.log(suc)
-                    area.devices = [...area.devices, suc._id]
-                    console.log(area.devices)
-                    await area.save()
+                    await virtualDevice.save()
                     res.send('Successful')
                 })
-                .catch(err => { res.send('Fail')})
+                .catch(err => { res.send('Fail') })
         }
 
         res.send('Error. Device has been already binded.')
         
+    },
+
+    deleteVirtual: async function (req, res, next) {
+        Device.findByIdAndDelete(req.query.virtualId)
+        .then(async (device) => {
+            let realDevice = await Device.findOne({ type: device.type, topic: device.topic })
+            realDevice.status = false
+            await realDevice.save()
+            res.send('Successful')
+        })
+        .catch(err => res.send('Fail'))
     }
 }

@@ -24,6 +24,10 @@ const DeviceSchema = new mongoose.Schema({
     position: {
         type: String,
         default: 'abc'
+    },
+
+    topic: {
+        type: String
     }
 });
 

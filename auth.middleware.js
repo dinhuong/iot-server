@@ -2,7 +2,6 @@ var User = require('./models/user');
 const jwt = require('jsonwebtoken');
 
 module.exports.requireAuth = async function (req, res, next) {
-    console.log(req.headers.token)
     const token = req.headers.token;
     if (!token) {
         res.status(401).send('Unauthorized');
