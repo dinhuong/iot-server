@@ -31,10 +31,10 @@ router.post('/areas/create', auth.requireAuth, AreaController.postCeate);
 
 router.delete('/areas', auth.requireAuth, AreaController.deleteOne);
 
-router.get('/devices/:deviceId', DeviceController.bind) 
+router.get('/devices/:deviceId', auth.requireAuth, DeviceController.bind) 
 
-router.get('/devices', DeviceController.getAll)
+router.get('/devices', auth.requireAuth, DeviceController.getAll)
 
-router.post('/devices/create', DeviceController.postCreate)
+router.post('/devices/create', auth.requireAuth, DeviceController.postCreate)
 
 module.exports = router;
