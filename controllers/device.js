@@ -54,21 +54,26 @@ module.exports = {
     },
 
     createVirtual: async (req, res, next) => {
-        const device = new Device({
-            name: req.body.name,
-            area: req.body.area,
-            type: req.body.type
-        })
-
-        const createdDevice = await device.save()
-        if (!createdDevice) {
-            res.send('Fail')
-        }
-
         let area = await Area.findById(req.body.area)
-        area.devices = [...area.devices, createdDevice._id]
-        await area.save()
-        res.json(createdDevice)
+
+        if (area) {
+            const device = new Device({
+                name: req.body.name,
+                area: req.body.area,
+                type: req.body.type
+            })
+    
+            const createdDevice = await device.save()
+            if (!createdDevice) {
+                res.send('Fail')
+            }
+    
+            
+            area.devices = [...area.devices, createdDevice._id]
+            await area.save()
+            res.json(createdDevice)
+        }
+        res.send('Invalid area id')
     },
 
     bind: async function (req, res, next) {

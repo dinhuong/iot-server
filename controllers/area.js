@@ -15,21 +15,25 @@ module.exports = {
     },
 
     postCeate : async function (req, res, next) {
-        const area = new Area({
-            garden: req.body.garden,
-            name: req.body.name,
-            position: req.body.position,
-            acreage: req.body.acreage
-        });
-
-        const createdArea = await area.save()
-        if (!createdArea) {
-            res.send("Fail")
-        }
         let garden = await Garden.findById(req.body.garden)
-        garden.areas = [...garden.areas, createdArea._id]
-        garden.save()
-        res.json(createdArea)
+
+        if (garden) {
+            const area = new Area({
+                garden: req.body.garden,
+                name: req.body.name,
+                position: req.body.position,
+                acreage: req.body.acreage
+            });
+    
+            const createdArea = await area.save()
+            if (!createdArea) {
+                res.send("Fail")
+            }
+            garden.areas = [...garden.areas, createdArea._id]
+            garden.save()
+            res.json(createdArea)
+        }
+        res.send('Invalid garden id')
     },
 
     deleteOne : async function (req, res, next) {
