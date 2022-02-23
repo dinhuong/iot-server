@@ -57,8 +57,7 @@ module.exports = {
         const device = new Device({
             name: req.body.name,
             area: req.body.area,
-            type: req.body.type,
-            status: false
+            type: req.body.type
         })
 
         const createdDevice = await device.save()
@@ -75,22 +74,25 @@ module.exports = {
     bind: async function (req, res, next) {
         let realDevice = await Device.findById(req.query.realId)
         let virtualDevice = await Device.findById(req.query.virtualId)
+        if (realDevice && virtualDevice) {
+            if (!(realDevice.status || virtualDevice.status)) {
 
-        if (!(realDevice.status || virtualDevice.status)) {
+                realDevice.status = true
+                virtualDevice.status = true
+                virtualDevice.topic = realDevice.topic
+    
+                await realDevice.save()
+                    .then(async (suc) => {
+                        await virtualDevice.save()
+                        res.send('Successful')
+                    })
+                    .catch(err => { res.send('Fail') })
+            }
+            res.send('Error. Device has been already binded.')
 
-            realDevice.status = true
-            virtualDevice.status = true
-            virtualDevice.topic = realDevice.topic
-
-            await realDevice.save()
-                .then(async (suc) => {
-                    await virtualDevice.save()
-                    res.send('Successful')
-                })
-                .catch(err => { res.send('Fail') })
         }
-
-        res.send('Error. Device has been already binded.')
+        
+        res.send('Error. Device is invalid')
 
     },
 
@@ -115,32 +117,39 @@ module.exports = {
     deleteVirtual: async function (req, res, next) {
         Device.findByIdAndDelete(req.query.virtualId)
             .then(async (device) => {
-                let realDevice = await Device.findOne({ type: device.type, topic: device.topic })
-                realDevice.status = false
-                await realDevice.save()
+                if (device.status) {
+                    await Device.findOneAndUpdate({ type: device.type, topic: device.topic }, { status: false })
+                }
                 res.send('Successful')
             })
             .catch(err => res.send('Fail'))
     },
 
     schedule: async function (req, res, next) {
-        let time = req.query.time
-        let isOn = req.query.isOn
+        let startTime = req.query.startTime
+        let endTime = req.query.endTime
+        let action = req.query.action
         let device = await Device.findById(req.query.deviceId)
         let topic = device.topic
-        let message = ""
+        let startMess = ""
+        let endMess = ""
 
         switch (device.type) {
-            case 3: message = `{"Lamp": ${ isOn ? 0 : 1 }}`
+            case 3: startMess = `{"Lamp": ${ action ? 0 : 1 }}`
+                    endMess = `{"Lamp": ${ action ? 1 : 0 }}`
                     break;
-            case 4: message = `{"Pump": ${ isOn ? 0 : 1 }}`
+            case 4: startMess = `{"Pump": ${ action ? 0 : 1 }}`
+                    endMess = `{"Lamp": ${ action ? 1 : 0 }}`
                     break;
         }
 
         if (message) {
-            cron.schedule('0 * * * * *', () => {
-                publisher(topic, message)
-                res.send('ok')
+            cron.schedule(startTime, () => {
+                publisher(topic, startMess)
+                cron.schedule(endTime, () => {
+                    publisher(topic, endMess)
+                    res.send('ok')
+                });
             });
         } else {
             res.send('Can not control sensors.')

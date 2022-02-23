@@ -33,7 +33,7 @@ module.exports = {
     },
 
     deleteOne : async function (req, res, next) {
-        Area.findByIdAndDelete({ _id: req.body.areaId })
+        Area.findByIdAndDelete({ _id: req.query.areaId })
         .then(async (result) => {
             let garden = await Garden.findById(result.garden)
             garden.areas.splice(garden.areas.findIndex(a => a==result._id), 1)
