@@ -135,22 +135,26 @@ module.exports = {
         let endMess = ""
 
         switch (device.type) {
-            case 3: startMess = `{"Lamp": ${ action ? 0 : 1 }}`
-                    endMess = `{"Lamp": ${ action ? 1 : 0 }}`
+            case 3: startMess = `{"Lamp":${ action ? 0 : 1 }}`
+                    endMess = `{"Lamp":${ action ? 1 : 0 }}`
                     break;
-            case 4: startMess = `{"Pump": ${ action ? 0 : 1 }}`
-                    endMess = `{"Lamp": ${ action ? 1 : 0 }}`
+            case 4: startMess = `{"Pump":${ action ? 0 : 1 }}`
+                    endMess = `{"Pump":${ action ? 1 : 0 }}`
                     break;
         }
 
-        if (message) {
+        if (true) {
+            console.log('....')
             cron.schedule(startTime, () => {
                 publisher(topic, startMess)
-                cron.schedule(endTime, () => {
-                    publisher(topic, endMess)
-                    res.send('ok')
-                });
+                console.log('start')
             });
+            cron.schedule(endTime, () => {
+                publisher(topic, endMess)
+                console.log('end')
+                
+            });
+            res.send('ok')
         } else {
             res.send('Can not control sensors.')
         }
