@@ -68,7 +68,6 @@ module.exports = {
                 res.send('Fail')
             }
     
-            
             area.devices = [...area.devices, createdDevice._id]
             await area.save()
             res.json(createdDevice)
@@ -80,7 +79,7 @@ module.exports = {
         let realDevice = await Device.findById(req.query.realId)
         let virtualDevice = await Device.findById(req.query.virtualId)
         if (realDevice && virtualDevice) {
-            if (!(realDevice.status || virtualDevice.status)) {
+            if (realDevice.status || virtualDevice.status) {
 
                 realDevice.status = true
                 virtualDevice.status = true
